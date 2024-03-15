@@ -1,5 +1,6 @@
 patch
 config.h
 dwm
+dwm-msg
 *.orig
 *.rej
