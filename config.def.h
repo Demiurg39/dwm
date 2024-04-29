@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 0;        /* border pixel of windows */
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int default_border = 0;   /* to switch back to default border after dynamic border resizing via keybinds */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
@@ -86,9 +86,9 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
-static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
+static const float mfact        = 0.50; /* factor of master area size [0.05..0.95] */
+static const int nmaster        = 1;    /* number of clients in master area */
+static const int resizehints    = 0;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 #define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
@@ -122,6 +122,15 @@ static const Layout layouts[] = {
     { MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
     { MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 
+#define XF86AudioLowerVolume 0x1008ff11
+#define XF86AudioRaiseVolume 0x1008ff13
+#define XF86AudioMicMute 0x1008ffb2
+#define XF86Launch3 0x1008ff43
+#define XF86AudioMute 0x1008ff12
+#define XF86MonBrightnessDown 0x1008ff03
+#define XF86MonBrightnessUp 0x1008ff02
+
+#define F12 0xffc9
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -139,20 +148,18 @@ static const Key keys[] = {
     /* modifier                         key         function        argument */
 
     // brightness and audio 
-    // {0,       XF86XK_AudioLowerVolume,              spawn, {.v = downvol}},
-    // {0,              XF86XK_AudioMute,              spawn, {.v = mutevol }},
-    // {0,       XF86XK_AudioRaiseVolume,              spawn, {.v = upvol}},
-    // {0,				 XF86XK_MonBrightnessUp,              spawn,	{.v = light_up}},
-    // {0,			 XF86XK_MonBrightnessDown,              spawn,	{.v = light_down}},
+    {0,                 XF86AudioRaiseVolume,       spawn,          {.v = upvol}},
+    {0,                 XF86AudioLowerVolume,       spawn,          {.v = downvol}},
+    {0,                        XF86AudioMute,       spawn,          {.v = mutevol }},
+    {0,                     XF86AudioMicMute,       spawn,          {.v = mutemic }},
+    {0,                  XF86MonBrightnessUp,       spawn,          {.v = light_up}},
+    {0,                XF86MonBrightnessDown,       spawn,          {.v = light_down}},
 
     // screenshot fullscreen and cropped
-    {MODKEY|ControlMask,                XK_u,       spawn,
-        SHCMD("maim | xclip -selection clipboard -t image/png")},
-    {MODKEY,                            XK_u,       spawn,
-        SHCMD("maim --select | xclip -selection clipboard -t image/png")},
+    {0,                                 F12,        spawn,       SHCMD("flameshot gui")},
 
-    { MODKEY,                           XK_c,       spawn,          SHCMD("rofi -show drun") },
-    { MODKEY|ShiftMask,                 XK_Return,  spawn,            SHCMD("kitty")},
+    { MODKEY,                           XK_d,       spawn,          SHCMD("rofi -show drun") },
+    { MODKEY|ShiftMask,                 XK_Return,  spawn,          SHCMD("kitty")},
 
     // toggle stuff
     { MODKEY,                           XK_b,       togglebar,      {0} },
@@ -229,7 +236,7 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,                 XK_w,       setborderpx,    {.i = default_border } },
 
     // kill dwm
-    { MODKEY|ControlMask|ShiftMask,     XK_q,       spawn,        SHCMD("killall bar.sh chadwm") },
+    { MODKEY|ControlMask|ShiftMask,     XK_q,       spawn,          SHCMD("killall bar.sh chadwm") },
 
     // kill window
     { MODKEY,                           XK_q,       killclient,     {0} },
@@ -259,7 +266,7 @@ static const Button buttons[] = {
     { ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
     { ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
     { ClkWinTitle,          0,              Button2,        zoom,           {0} },
-    { ClkStatusText,        0,              Button2,        spawn,          SHCMD("st") },
+    { ClkStatusText,        0,              Button2,        spawn,          SHCMD("kitty") },
 
     /* Keep movemouse? */
     /* { ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} }, */
